@@ -8,6 +8,7 @@ import "./IERC1155MetadataURI.sol";
 import "./Address.sol";
 import "./Context.sol";
 import "./ERC165.sol";
+//import "https://github.com/Arachnid/solidity-stringutils/blob/master/src/strings.sol";
 
 /**
  *
@@ -19,7 +20,8 @@ import "./ERC165.sol";
  */
 contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     using Address for address;
-
+    //using strings for *;
+    
     // Mapping from token ID to account balances
     mapping (uint256 => mapping(address => uint256)) private _balances;
 
@@ -33,15 +35,16 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     // Mapping from token ID to URI
     mapping (uint256 => string) private _tokenPublicUri;
     mapping (uint256 => string) private _tokenPrivateUri;
+    //mapping (uint256 => string) private _uris;
     
     // NEW
     // Mapping from token IDs to account
-    mapping (address => uint256[]) private _creators;
-    mapping (uint256 => address) private _getCreatorFromId;
-    
+    // mapping (address => uint256[]) private _creators;
+    mapping (uint256 => address) private _creators;
     // NEW
     // Mapping from account to piece locks
-    mapping (address => bool) private _locks;
+    // mapping (address => bool) private _locks;
+    mapping (uint256 => bool) _locks;
     
     // NEW
     // System admin
@@ -70,14 +73,19 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     
     // NEW
     // simple function to unlock data for a creator
-    function unlock(address creator_) public {
-        require(_msgSender() == _admin, "ERC1155: not the current admin");
-        _locks[creator_] = false;
+    // function unlock(address creator_) public {
+    //     require(_msgSender() == _admin, "ERC1155: not the current admin");
+    //     _locks[creator_] = false;
         
-        for (uint256 i = 0; i < _creators[creator_].length; i++) {
-            uint256 id = _creators[creator_][i];
-            emit Unlocked(creator_, id,  _tokenPublicUri[id], _tokenPrivateUri[id]);
-        }
+    //     for (uint256 i = 0; i < _creators[creator_].length; i++) {
+    //         uint256 id = _creators[creator_][i];
+    //         emit Unlocked(creator_, id,  _tokenPublicUri[id], _tokenPrivateUri[id]);
+    //     }
+    // }
+    function unlock(uint256 id_, address creator_) public {
+        require(_msgSender() == _admin, "ERC1155: not the current admin");
+        _locks[id_] = false;
+        _creators[id_] = creator_;
     }
     
     // NEW
@@ -198,7 +206,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         if (isLocked(id)) {
             emit TransferSinglePublic(operator, from, to, id, amount, _tokenPublicUri[id]);
         } else {
-            emit TransferSinglePrivate(operator, from, to, id, amount, _getCreatorFromId[id], _tokenPublicUri[id], _tokenPrivateUri[id]);
+            emit TransferSinglePrivate(operator, from, to, id, amount, _creators[id], _tokenPublicUri[id], _tokenPrivateUri[id]);
         }
 
         _doSafeTransferAcceptanceCheck(operator, from, to, id, amount, data);
@@ -241,7 +249,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             if (isLocked(id)) {
                 emit TransferSinglePublic(operator, from, to, id, amount, _tokenPublicUri[id]);
             } else {
-                emit TransferSinglePrivate(operator, from, to, id, amount, _getCreatorFromId[id], _tokenPublicUri[id], _tokenPrivateUri[id]);
+                emit TransferSinglePrivate(operator, from, to, id, amount, _creators[id], _tokenPublicUri[id], _tokenPrivateUri[id]);
             }
         }
 
@@ -277,7 +285,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     
     // NEW
     function _safeLockCheck(uint256 id) internal view returns (bool) {
-        return _locks[_getCreatorFromId[id]];
+        return _locks[id];
     }
 
     /**
@@ -298,13 +306,13 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         _beforeTokenTransfer(operator, address(0), account, _asSingletonArray(id), _asSingletonArray(amount), data);
     
-        // assume peices are originally minted to the creator
-        _creators[account].push(id);
-        _getCreatorFromId[id] = account;
+        // assume peices are originally minted to the centralized Cooper wallet
+        //_creators[account].push(id);
+        //_getCreatorFromId[id] = account;
         _balances[id][account] += amount;
         _tokenPublicUri[id] = publicUri;
         _tokenPrivateUri[id] = privateUri;
-        _locks[account] = true;
+        _locks[id] = true;
         emit TransferSinglePublic(operator, address(0), account, id, amount, publicUri);
 
         _doSafeTransferAcceptanceCheck(operator, address(0), account, id, amount, data);
@@ -329,11 +337,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         _beforeTokenTransfer(operator, address(0), to, ids, amounts, data);
 
-        _locks[to] = true;
         for (uint i = 0; i < ids.length; i++) {
-            // assume peices are originally minted to the creator
-            _creators[to].push(ids[i]);
-            _getCreatorFromId[ids[i]] = to;
+            // assume peices are originally minted to the centralized Cooper wallet
+            //_creators[to].push(ids[i]);
+            //_getCreatorFromId[ids[i]] = to;
+            _locks[ids[i]] = true;
             _balances[ids[i]][to] += amounts[i];
             _tokenPublicUri[ids[i]] = publicUris[i];
             _tokenPrivateUri[ids[i]] = privateUris[i];

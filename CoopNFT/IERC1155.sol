@@ -31,7 +31,7 @@ interface IERC1155 is IERC165 {
     /**
      * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
      */
-    event TransferSinglePrivate(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value, address creator, string  publicUri, string privateUri);
+    event TransferSinglePrivate(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value, address creator, string publicUri, string privateUri);
     
     // NEW
     /**
