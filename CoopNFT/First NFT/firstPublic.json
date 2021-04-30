@@ -1,0 +1,24 @@
+{
+	"title": "First Cooper NFT: ERC1155 Contract",
+	"type": "object",
+	"ipfsHash": "enter_ipfs_hash_of_contract",
+	"description": "This piece features the first NFT designed for the Cooper NFT Marketplace",
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "First Cooper NFT: ERC1155 Contract"
+		},
+		"description": {
+			"type": "string",
+			"description": "This piece features the first NFT designedd for the Cooper NFT Marketplace"
+		},
+		"created_at": {
+			"type": "datetime",
+			"description": "2021-04-30 19:21:50"
+		},
+		"totaly_supply": {
+			"type": "int",
+			"description": 1
+		}
+	}
+}

@@ -32,13 +32,6 @@ interface IERC1155 is IERC165 {
      * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
      */
     event TransferSinglePrivate(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value, address creator, string publicUri, string privateUri);
-    
-    // NEW
-    /**
-     * @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
-     * transfers.
-     */
-    event TransferBatchPrivate(address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values, address[] creators, string[] publicUri, string[] privateUri);
 
     /**
      * @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to
