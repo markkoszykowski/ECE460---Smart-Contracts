@@ -36,7 +36,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     
     // NEW
     // Mapping from token ID to account
-    mapping (uint256 => address) private _creators;
+    mapping (uint256 => address[]) private _creators;
     
     // NEW
     // Mapping from account to piece locks
@@ -76,11 +76,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     //
     //  - '_msgSender' is the '_admin'
     //
-    function unlock(uint256 id_, address creator_) public {
+    function unlock(uint256 id_, address[] memory creators_) public {
         require(_msgSender() == _admin, "ERC1155: not the current admin");
         _locks[id_] = false;
-        _creators[id_] = creator_;
-        emit Unlocked(creator_, id_, _tokenPublicUri[id_], _tokenPrivateUri[id_]);
+        _creators[id_] = creators_;
+        emit Unlocked(creators_, id_, _tokenPublicUri[id_], _tokenPrivateUri[id_]);
     }
     
     // NEW

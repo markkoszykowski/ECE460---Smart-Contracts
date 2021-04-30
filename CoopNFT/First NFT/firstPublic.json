@@ -10,7 +10,7 @@
 		},
 		"description": {
 			"type": "string",
-			"description": "This piece features the first NFT designedd for the Cooper NFT Marketplace"
+			"description": "This piece features the first NFT designed for the Cooper NFT Marketplace"
 		},
 		"created_at": {
 			"type": "datetime",
