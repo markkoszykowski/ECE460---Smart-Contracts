@@ -12,11 +12,14 @@ import "./IERC165.sol";
  */
 interface IERC1155 is IERC165 {
     // NEW
+    /**
+     * @dev Emitted when token of token type `id` is unlocked.
+     */
     event Unlocked(address indexed creator, uint256 id, string publicUri, string privateUri);
     
     // EDITED
     /**
-     * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+     * @dev Emitted when `value` tokens of token type `id` that are locked are transferred from `from` to `to` by `operator`.
      */
     event TransferSinglePublic(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value, string publicUri);
 
@@ -29,7 +32,7 @@ interface IERC1155 is IERC165 {
     
     // NEW
     /**
-     * @dev Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+     * @dev Emitted when `value` tokens of token type `id` that are unlocked are transferred from `from` to `to` by `operator`.
      */
     event TransferSinglePrivate(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value, address creator, string publicUri, string privateUri);
 

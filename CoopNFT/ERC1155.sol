@@ -26,7 +26,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     // Mapping from account to operator approvals
     mapping (address => mapping(address => bool)) private _operatorApprovals;
 
-    // Used as the URI for all token types by relying on ID substitution, e.g. https://token-cdn-domain/{id}.json
+    // Used as the URI for all token types
     string private _uri;
     
     // NEW
@@ -50,6 +50,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
     /**
      * @dev See {_setURI}.
+     * @dev See {_setAdmin}.
      */
     constructor (string memory uri_, address admin_) {
         _setURI(uri_);
@@ -71,10 +72,15 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     
     // NEW
     // Simple function to unlock data for a creator based on token ID
+    // Requirements:
+    //
+    //  - '_msgSender' is the '_admin'
+    //
     function unlock(uint256 id_, address creator_) public {
         require(_msgSender() == _admin, "ERC1155: not the current admin");
         _locks[id_] = false;
         _creators[id_] = creator_;
+        emit Unlocked(creator_, id_, _tokenPublicUri[id_], _tokenPrivateUri[id_]);
     }
     
     // NEW
@@ -95,12 +101,8 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {IERC1155MetadataURI-uri}.
      *
-     * This implementation returns the same URI for *all* token types. It relies
-     * on the token type ID substitution mechanism
-     * https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
+     * This implementation returns the same URI for *all* token types.
      *
-     * Clients calling this function must replace the `\{id\}` substring with the
-     * actual token type ID.
      */
     function uri(uint256) public view virtual override returns (string memory) {
         return _uri;
@@ -210,7 +212,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
      *
-     * Emits a {TransferSingle} event.
+     * Emits a {TransferSinglePublic} event if piece is locked, otherwise emits a {TransferSinglePrivate} event.
      *
      * Requirements:
      *
@@ -250,7 +252,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_safeTransferFrom}.
      *
-     * Emits a {TransferBatch} event.
+     * Emits {TransferSinglePublic} events if pieces are locked, otherwise emits {TransferSinglePrivate} events.
      *
      * Requirements:
      *
@@ -292,18 +294,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 
     /**
-     * @dev Sets a new URI for all token types, by relying on the token type ID
-     * substitution mechanism
-     * https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
-     *
-     * By this mechanism, any occurrence of the `\{id\}` substring in either the
-     * URI or any of the amounts in the JSON file at said URI will be replaced by
-     * clients with the token type ID.
-     *
-     * For example, the `https://token-cdn-domain/\{id\}.json` URI would be
-     * interpreted by clients as
-     * `https://token-cdn-domain/000000000000000000000000000000000000000000000000000000000004cce0.json`
-     * for token type ID 0x4cce0.
+     * @dev Sets a new URI for all token types.
      *
      * See {uri}.
      *
