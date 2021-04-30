@@ -8,7 +8,6 @@ import "./IERC1155MetadataURI.sol";
 import "./Address.sol";
 import "./Context.sol";
 import "./ERC165.sol";
-//import "https://github.com/Arachnid/solidity-stringutils/blob/master/src/strings.sol";
 
 /**
  *
@@ -20,7 +19,6 @@ import "./ERC165.sol";
  */
 contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     using Address for address;
-    //using strings for *;
     
     // Mapping from token ID to account balances
     mapping (uint256 => mapping(address => uint256)) private _balances;
