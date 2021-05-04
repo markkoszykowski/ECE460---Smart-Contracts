@@ -56,8 +56,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         _setURI(uri_);
         _setAdmin(admin_);
     }
-    
-    
+
     // NEW
     // Possibly switch to check for a certain account for security
     function getAdmin() public view returns (address) {
@@ -93,8 +92,6 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-     
-     
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
         return interfaceId == type(IERC1155).interfaceId
             || interfaceId == type(IERC1155MetadataURI).interfaceId
